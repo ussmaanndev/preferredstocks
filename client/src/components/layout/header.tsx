@@ -39,15 +39,15 @@ export default function Header() {
             <nav className="hidden md:flex space-x-8">
               {navigation.map((item) => (
                 <Link key={item.name} href={item.href}>
-                  <a
-                    className={`text-lg font-medium transition-colors ${
+                  <span
+                    className={`text-lg font-medium transition-colors cursor-pointer ${
                       isActive(item.href)
                         ? "text-primary"
                         : "text-secondary hover:text-primary"
                     }`}
                   >
                     {item.name}
-                  </a>
+                  </span>
                 </Link>
               ))}
             </nav>
@@ -62,8 +62,8 @@ export default function Header() {
                 <div className="flex flex-col space-y-4 mt-6">
                   {navigation.map((item) => (
                     <Link key={item.name} href={item.href}>
-                      <a
-                        className={`text-lg font-medium block py-2 transition-colors ${
+                      <span
+                        className={`text-lg font-medium block py-2 transition-colors cursor-pointer ${
                           isActive(item.href)
                             ? "text-primary"
                             : "text-secondary hover:text-primary"
@@ -71,7 +71,7 @@ export default function Header() {
                         onClick={() => setIsOpen(false)}
                       >
                         {item.name}
-                      </a>
+                      </span>
                     </Link>
                   ))}
                 </div>

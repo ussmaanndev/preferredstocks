@@ -28,17 +28,17 @@ export default function StockCard({ stock }: StockCardProps) {
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold text-secondary">
-              ${stock.price.toFixed(2)}
+              ${stock.price ? stock.price.toFixed(2) : 'N/A'}
             </div>
             <div className={`text-sm font-medium flex items-center ${
-              stock.changePercent >= 0 ? 'text-success' : 'text-destructive'
+              (stock.changePercent || 0) >= 0 ? 'text-success' : 'text-destructive'
             }`}>
-              {stock.changePercent >= 0 ? (
+              {(stock.changePercent || 0) >= 0 ? (
                 <TrendingUp className="h-4 w-4 mr-1" />
               ) : (
                 <TrendingDown className="h-4 w-4 mr-1" />
               )}
-              {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(2)} ({stock.changePercent >= 0 ? '+' : ''}{stock.changePercent.toFixed(1)}%)
+              {(stock.change || 0) >= 0 ? '+' : ''}{stock.change ? stock.change.toFixed(2) : '0.00'} ({(stock.changePercent || 0) >= 0 ? '+' : ''}{stock.changePercent ? stock.changePercent.toFixed(1) : '0.0'}%)
             </div>
           </div>
         </div>
@@ -47,13 +47,13 @@ export default function StockCard({ stock }: StockCardProps) {
           <div>
             <div className="text-sm text-neutral-medium">Dividend Yield</div>
             <div className="text-lg font-semibold text-secondary">
-              {stock.dividendYield.toFixed(1)}%
+              {stock.dividendYield ? stock.dividendYield.toFixed(1) : 'N/A'}%
             </div>
           </div>
           <div>
             <div className="text-sm text-neutral-medium">Market Cap</div>
             <div className="text-lg font-semibold text-secondary">
-              {stock.marketCap}
+              {stock.marketCap || 'N/A'}
             </div>
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function StockCard({ stock }: StockCardProps) {
           <div>
             <div className="text-sm text-neutral-medium">Last Trade</div>
             <div className="text-sm font-medium text-secondary">
-              {formatTime(stock.lastTrade)}
+              {stock.lastTrade ? formatTime(stock.lastTrade) : 'N/A'}
             </div>
           </div>
           <Link href={`/stocks/${stock.ticker}`}>
