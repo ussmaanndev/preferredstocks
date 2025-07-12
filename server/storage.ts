@@ -1,4 +1,5 @@
 import { preferredStocks, newsArticles, marketData, type PreferredStock, type InsertPreferredStock, type NewsArticle, type InsertNewsArticle, type MarketData, type InsertMarketData } from "@shared/schema";
+import { marketDataService } from "./services/market-data";
 
 export interface IStorage {
   // Preferred Stocks
@@ -156,7 +157,14 @@ export class MemStorage implements IStorage {
 
     sampleStocks.forEach(stock => {
       const id = this.stockIdCounter++;
-      this.preferredStocks.set(stock.ticker, { ...stock, id });
+      this.preferredStocks.set(stock.ticker, { 
+        ...stock, 
+        id, 
+        updatedAt: new Date(),
+        sector: stock.sector || null,
+        description: stock.description || null,
+        isActive: stock.isActive !== undefined ? stock.isActive : true
+      });
     });
 
     // Initialize with sample news articles
@@ -209,7 +217,15 @@ export class MemStorage implements IStorage {
 
     sampleNews.forEach(article => {
       const id = this.newsIdCounter++;
-      this.newsArticles.set(id, { ...article, id });
+      this.newsArticles.set(id, { 
+        ...article, 
+        id,
+        content: article.content || null,
+        url: article.url || null,
+        relatedTickers: article.relatedTickers || null,
+        category: article.category || null,
+        isActive: article.isActive !== undefined ? article.isActive : true
+      });
     });
 
     // Initialize market data
@@ -242,6 +258,27 @@ export class MemStorage implements IStorage {
 
   async getFeaturedPreferredStocks(): Promise<PreferredStock[]> {
     const stocks = Array.from(this.preferredStocks.values());
+    
+    // Try to update some stocks with live data
+    const featuredTickers = ['JPM-PA', 'BER-PC', 'MS-PA', 'C-PN'];
+    for (const ticker of featuredTickers) {
+      try {
+        const liveData = await marketDataService.fetchPreferredStockData(ticker);
+        if (liveData) {
+          const existingStock = this.preferredStocks.get(ticker);
+          if (existingStock) {
+            this.preferredStocks.set(ticker, {
+              ...existingStock,
+              ...liveData,
+              updatedAt: new Date()
+            });
+          }
+        }
+      } catch (error) {
+        console.error(`Error updating ${ticker}:`, error);
+      }
+    }
+    
     return stocks.slice(0, 3);
   }
 
@@ -261,7 +298,14 @@ export class MemStorage implements IStorage {
 
   async createPreferredStock(stock: InsertPreferredStock): Promise<PreferredStock> {
     const id = this.stockIdCounter++;
-    const newStock: PreferredStock = { ...stock, id };
+    const newStock: PreferredStock = { 
+      ...stock, 
+      id, 
+      updatedAt: new Date(),
+      sector: stock.sector || null,
+      description: stock.description || null,
+      isActive: stock.isActive !== undefined ? stock.isActive : true
+    };
     this.preferredStocks.set(stock.ticker, newStock);
     return newStock;
   }
@@ -270,7 +314,24 @@ export class MemStorage implements IStorage {
     const existingStock = this.preferredStocks.get(ticker);
     if (!existingStock) return undefined;
     
-    const updatedStock = { ...existingStock, ...stock };
+    // Try to get live data for this stock
+    try {
+      const liveData = await marketDataService.fetchPreferredStockData(ticker);
+      if (liveData) {
+        const updatedStock = { 
+          ...existingStock, 
+          ...stock,
+          ...liveData,
+          updatedAt: new Date()
+        };
+        this.preferredStocks.set(ticker, updatedStock);
+        return updatedStock;
+      }
+    } catch (error) {
+      console.error(`Error fetching live data for ${ticker}:`, error);
+    }
+    
+    const updatedStock = { ...existingStock, ...stock, updatedAt: new Date() };
     this.preferredStocks.set(ticker, updatedStock);
     return updatedStock;
   }
@@ -302,19 +363,35 @@ export class MemStorage implements IStorage {
 
   async createNewsArticle(article: InsertNewsArticle): Promise<NewsArticle> {
     const id = this.newsIdCounter++;
-    const newArticle: NewsArticle = { ...article, id };
+    const newArticle: NewsArticle = { 
+      ...article, 
+      id,
+      content: article.content || null,
+      url: article.url || null,
+      relatedTickers: article.relatedTickers || null,
+      category: article.category || null,
+      isActive: article.isActive !== undefined ? article.isActive : true
+    };
     this.newsArticles.set(id, newArticle);
     return newArticle;
   }
 
   // Market Data methods
   async getLatestMarketData(): Promise<MarketData | undefined> {
-    return this.marketData;
+    try {
+      // Fetch live market data
+      const liveData = await marketDataService.fetchMarketData();
+      this.marketData = liveData;
+      return liveData;
+    } catch (error) {
+      console.error('Error fetching live market data:', error);
+      return this.marketData;
+    }
   }
 
   async createMarketData(data: InsertMarketData): Promise<MarketData> {
     const id = this.marketDataIdCounter++;
-    this.marketData = { ...data, id };
+    this.marketData = { ...data, id, updatedAt: new Date() };
     return this.marketData;
   }
 }

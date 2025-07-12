@@ -47,33 +47,33 @@ export default function MarketOverview() {
   const marketItems = [
     {
       label: "S&P 500",
-      value: marketData.sp500.toFixed(2),
-      change: marketData.sp500Change,
+      value: marketData.sp500 ? marketData.sp500.toFixed(2) : "N/A",
+      change: marketData.sp500Change || 0,
     },
     {
       label: "Dow Jones",
-      value: marketData.dow.toFixed(2),
-      change: marketData.dowChange,
+      value: marketData.dow ? marketData.dow.toFixed(2) : "N/A",
+      change: marketData.dowChange || 0,
     },
     {
       label: "NASDAQ",
-      value: marketData.nasdaq.toFixed(2),
-      change: marketData.nasdaqChange,
+      value: marketData.nasdaq ? marketData.nasdaq.toFixed(2) : "N/A",
+      change: marketData.nasdaqChange || 0,
     },
     {
       label: "10-Year Treasury",
-      value: `${marketData.treasury10y.toFixed(2)}%`,
-      change: marketData.treasury10yChange,
+      value: marketData.treasury10y ? `${marketData.treasury10y.toFixed(2)}%` : "N/A",
+      change: marketData.treasury10yChange || 0,
     },
     {
       label: "VIX",
-      value: marketData.vix.toFixed(2),
-      change: marketData.vixChange,
+      value: marketData.vix ? marketData.vix.toFixed(2) : "N/A",
+      change: marketData.vixChange || 0,
     },
     {
       label: "Preferred Avg Yield",
-      value: `${marketData.preferredAvgYield.toFixed(1)}%`,
-      change: marketData.preferredAvgYieldChange,
+      value: marketData.preferredAvgYield ? `${marketData.preferredAvgYield.toFixed(1)}%` : "N/A",
+      change: marketData.preferredAvgYieldChange || 0,
     },
   ];
 

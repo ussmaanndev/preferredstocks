@@ -22,7 +22,7 @@ export default function Home() {
   });
 
   const { data: newsArticles, isLoading: loadingNews } = useQuery<NewsArticle[]>({
-    queryKey: ["/api/news", { limit: 4 }],
+    queryKey: ["/api/news"],
     staleTime: 60000,
   });
 
