@@ -16,12 +16,26 @@ export default function StockDetail() {
 
   const { data: stock, isLoading: loadingStock, error } = useQuery<PreferredStock>({
     queryKey: ["/api/stocks", ticker],
+    queryFn: async () => {
+      const response = await fetch(`/api/stocks/${ticker}`);
+      if (!response.ok) {
+        throw new Error('Stock not found');
+      }
+      return response.json();
+    },
     enabled: !!ticker,
     staleTime: 30000,
   });
 
   const { data: relatedNews, isLoading: loadingNews } = useQuery<NewsArticle[]>({
     queryKey: ["/api/news/ticker", ticker],
+    queryFn: async () => {
+      const response = await fetch(`/api/news/ticker/${ticker}`);
+      if (!response.ok) {
+        return [];
+      }
+      return response.json();
+    },
     enabled: !!ticker,
     staleTime: 60000,
   });

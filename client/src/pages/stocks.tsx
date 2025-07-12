@@ -22,7 +22,7 @@ export default function Stocks() {
   const [filterBySector, setFilterBySector] = useState<string>('all');
 
   const { data: stocks, isLoading, error } = useQuery<PreferredStock[]>({
-    queryKey: ["/api/stocks", searchQuery ? { search: searchQuery } : {}],
+    queryKey: searchQuery ? ["/api/stocks", `search=${searchQuery}`] : ["/api/stocks"],
     staleTime: 30000,
   });
 
