@@ -18,16 +18,16 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link href="/stocks">
-                  <a className="text-gray-300 hover:text-white text-base transition-colors">
+                  <span className="text-gray-300 hover:text-white text-base transition-colors cursor-pointer">
                     All Preferred Stocks
-                  </a>
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link href="/stocks?filter=top-performers">
-                  <a className="text-gray-300 hover:text-white text-base transition-colors">
+                  <span className="text-gray-300 hover:text-white text-base transition-colors cursor-pointer">
                     Top Performers
-                  </a>
+                  </span>
                 </Link>
               </li>
               <li>
