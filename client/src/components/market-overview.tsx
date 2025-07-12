@@ -12,16 +12,16 @@ export default function MarketOverview() {
 
   if (isLoading) {
     return (
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h2 className="text-2xl font-semibold text-secondary mb-4">Market Overview</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="bg-white border-b shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <h2 className="text-3xl font-bold text-secondary mb-6">Today's Market Overview</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="bg-neutral-light">
-                <CardContent className="p-4 text-center">
-                  <Skeleton className="h-4 w-16 mb-2" />
-                  <Skeleton className="h-8 w-20 mb-2" />
-                  <Skeleton className="h-4 w-12" />
+              <Card key={i} className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 shadow-lg">
+                <CardContent className="p-6 text-center">
+                  <Skeleton className="h-6 w-32 mb-3 mx-auto" />
+                  <Skeleton className="h-12 w-40 mb-4 mx-auto" />
+                  <Skeleton className="h-6 w-24 mx-auto" />
                 </CardContent>
               </Card>
             ))}
@@ -33,10 +33,10 @@ export default function MarketOverview() {
 
   if (!marketData) {
     return (
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h2 className="text-2xl font-semibold text-secondary mb-4">Market Overview</h2>
-          <div className="text-center text-neutral-medium">
+      <div className="bg-white border-b shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <h2 className="text-3xl font-bold text-secondary mb-6">Today's Market Overview</h2>
+          <div className="text-center text-xl text-gray-600">
             Market data temporarily unavailable
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function MarketOverview() {
     },
     {
       label: "10-Year Treasury",
-      value: marketData.treasury10y ? `${marketData.treasury10y.toFixed(2)}%` : "N/A",
+      value: marketData.treasury10y ? `${marketData.treasury10y.toFixed(3)}%` : "N/A",
       change: marketData.treasury10yChange || 0,
     },
     {
@@ -78,28 +78,40 @@ export default function MarketOverview() {
   ];
 
   return (
-    <div className="bg-white border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <h2 className="text-2xl font-semibold text-secondary mb-4">Market Overview</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div className="bg-white border-b shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 className="text-3xl font-bold text-secondary mb-6">Today's Market Overview</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {marketItems.map((item) => (
-            <Card key={item.label} className="bg-neutral-light">
-              <CardContent className="p-4 text-center">
-                <div className="text-sm text-neutral-medium">{item.label}</div>
-                <div className="text-2xl font-bold text-secondary">{item.value}</div>
-                <div className={`text-sm font-medium flex items-center justify-center ${
-                  item.change >= 0 ? 'text-success' : 'text-destructive'
+            <Card key={item.label} className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6 text-center">
+                <div className="text-lg font-bold text-gray-600 mb-2">
+                  {item.label}
+                </div>
+                <div className="text-4xl font-bold text-secondary mb-3">
+                  {item.value}
+                </div>
+                <div className={`text-lg font-semibold flex items-center justify-center ${
+                  item.change >= 0 ? 'text-green-600' : 'text-red-600'
                 }`}>
                   {item.change >= 0 ? (
-                    <TrendingUp className="h-4 w-4 mr-1" />
+                    <TrendingUp className="w-6 h-6 mr-2" />
                   ) : (
-                    <TrendingDown className="h-4 w-4 mr-1" />
+                    <TrendingDown className="w-6 h-6 mr-2" />
                   )}
                   {item.change >= 0 ? '+' : ''}{item.change.toFixed(2)}%
+                </div>
+                <div className="text-sm text-gray-500 mt-2">
+                  {item.change >= 0 ? 'Higher' : 'Lower'} than yesterday
                 </div>
               </CardContent>
             </Card>
           ))}
+        </div>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-500">
+            Market data updated every minute • Last updated: {new Date(marketData.updatedAt).toLocaleTimeString()}
+          </p>
         </div>
       </div>
     </div>

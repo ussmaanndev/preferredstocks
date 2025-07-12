@@ -30,7 +30,7 @@ export default function Header() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link href="/">
-                <h1 className="text-2xl font-bold text-primary cursor-pointer">
+                <h1 className="text-3xl font-bold text-primary cursor-pointer">
                   PreferredStockHub
                 </h1>
               </Link>
@@ -40,10 +40,10 @@ export default function Header() {
               {navigation.map((item) => (
                 <Link key={item.name} href={item.href}>
                   <span
-                    className={`text-lg font-medium transition-colors cursor-pointer ${
+                    className={`text-xl font-semibold transition-colors cursor-pointer px-4 py-3 rounded-lg ${
                       isActive(item.href)
-                        ? "text-primary"
-                        : "text-secondary hover:text-primary"
+                        ? "text-white bg-primary"
+                        : "text-gray-700 hover:text-primary hover:bg-gray-100"
                     }`}
                   >
                     {item.name}
