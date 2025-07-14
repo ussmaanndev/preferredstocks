@@ -11,14 +11,14 @@ export interface IStorage {
   searchPreferredStocks(query: string): Promise<PreferredStock[]>;
   createPreferredStock(stock: InsertPreferredStock): Promise<PreferredStock>;
   updatePreferredStock(ticker: string, stock: Partial<InsertPreferredStock>): Promise<PreferredStock | undefined>;
-  
+
   // News Articles
   getNewsArticle(id: number): Promise<NewsArticle | undefined>;
   getAllNewsArticles(): Promise<NewsArticle[]>;
   getLatestNewsArticles(limit?: number): Promise<NewsArticle[]>;
   getNewsArticlesByTicker(ticker: string): Promise<NewsArticle[]>;
   createNewsArticle(article: InsertNewsArticle): Promise<NewsArticle>;
-  
+
   // Market Data
   getLatestMarketData(): Promise<MarketData | undefined>;
   createMarketData(data: InsertMarketData): Promise<MarketData>;
@@ -43,10 +43,10 @@ export class MemStorage implements IStorage {
 
   private async initializeData() {
     console.log('Initializing stock data...');
-    
+
     // Generate 1000+ real preferred stocks
     const realStocks = await stockDataService.generatePreferredStocks();
-    console.log(`Generated ${realStocks.length} preferred stocks`);
+    console.log(Generated ${realStocks.length} preferred stocks);
 
     realStocks.forEach(stock => {
       const id = this.stockIdCounter++;
@@ -151,7 +151,7 @@ export class MemStorage implements IStorage {
 
   async getFeaturedPreferredStocks(): Promise<PreferredStock[]> {
     const stocks = Array.from(this.preferredStocks.values());
-    
+
     // Try to update some stocks with live data
     const featuredTickers = ['JPM-PA', 'BAC-PB', 'MS-PA', 'C-PB'];
     for (const ticker of featuredTickers) {
@@ -168,10 +168,10 @@ export class MemStorage implements IStorage {
           }
         }
       } catch (error) {
-        console.error(`Error updating ${ticker}:`, error);
+        console.error(Error updating ${ticker}:, error);
       }
     }
-    
+
     return stocks
       .filter(stock => stock.dividendYield > 6)
       .sort((a, b) => b.dividendYield - a.dividendYield)
@@ -209,7 +209,7 @@ export class MemStorage implements IStorage {
   async updatePreferredStock(ticker: string, stock: Partial<InsertPreferredStock>): Promise<PreferredStock | undefined> {
     const existingStock = this.preferredStocks.get(ticker);
     if (!existingStock) return undefined;
-    
+
     // Try to get live data for this stock
     try {
       const liveData = await marketDataService.fetchPreferredStockData(ticker);
@@ -224,9 +224,9 @@ export class MemStorage implements IStorage {
         return updatedStock;
       }
     } catch (error) {
-      console.error(`Error fetching live data for ${ticker}:`, error);
+      console.error(Error fetching live data for ${ticker}:, error);
     }
-    
+
     const updatedStock = { ...existingStock, ...stock, updatedAt: new Date() };
     this.preferredStocks.set(ticker, updatedStock);
     return updatedStock;
