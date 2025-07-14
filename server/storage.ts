@@ -46,7 +46,7 @@ export class MemStorage implements IStorage {
 
     // Generate 1000+ real preferred stocks
     const realStocks = await stockDataService.generatePreferredStocks();
-    console.log(Generated ${realStocks.length} preferred stocks);
+    console.log(`Generated ${realStocks.length} preferred stocks`);
 
     realStocks.forEach(stock => {
       const id = this.stockIdCounter++;
@@ -168,7 +168,7 @@ export class MemStorage implements IStorage {
           }
         }
       } catch (error) {
-        console.error(Error updating ${ticker}:, error);
+        console.error(`Error updating ${ticker}:`, error);
       }
     }
 
@@ -224,7 +224,7 @@ export class MemStorage implements IStorage {
         return updatedStock;
       }
     } catch (error) {
-      console.error(Error fetching live data for ${ticker}:, error);
+      console.error(`Error fetching live data for ${ticker}:`, error);
     }
 
     const updatedStock = { ...existingStock, ...stock, updatedAt: new Date() };
