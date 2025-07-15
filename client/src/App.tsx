@@ -7,6 +7,7 @@ import Home from "@/pages/home";
 import StockDetail from "@/pages/stock-detail";
 import Stocks from "@/pages/stocks";
 import News from "@/pages/news";
+import NewsArticle from "@/pages/news-article";
 import Analysis from "@/pages/analysis";
 import NotFound from "@/pages/not-found";
 import Header from "@/components/layout/header";
@@ -22,6 +23,7 @@ function Router() {
           <Route path="/stocks" component={Stocks} />
           <Route path="/stocks/:ticker" component={StockDetail} />
           <Route path="/news" component={News} />
+          <Route path="/news/:id" component={NewsArticle} />
           <Route path="/analysis" component={Analysis} />
           <Route component={NotFound} />
         </Switch>

@@ -1,6 +1,7 @@
-import { Clock, ExternalLink, Building2 } from "lucide-react";
+import { Clock, ExternalLink, Building2, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "wouter";
 import type { NewsArticle } from "@shared/schema";
 
 interface NewsArticleProps {
@@ -23,14 +24,9 @@ export default function NewsArticleCard({ article }: NewsArticleProps) {
     }
   };
 
-  const handleClick = () => {
-    if (article.url) {
-      window.open(article.url, '_blank', 'noopener,noreferrer');
-    }
-  };
-
   return (
-    <Card className="bg-white shadow-md border hover:shadow-lg transition-shadow cursor-pointer" onClick={handleClick}>
+    <Link href={`/news/${article.id}`}>
+      <Card className="bg-white shadow-md border hover:shadow-lg transition-shadow cursor-pointer group">
       <CardContent className="p-6">
         <div className="flex items-start space-x-4">
           <div className="w-20 h-20 bg-neutral-light rounded-lg flex-shrink-0 flex items-center justify-center">
@@ -38,12 +34,10 @@ export default function NewsArticleCard({ article }: NewsArticleProps) {
           </div>
           <div className="flex-1">
             <div className="flex items-start justify-between mb-2">
-              <h3 className="text-lg font-bold text-secondary hover:text-primary transition-colors line-clamp-2">
+              <h3 className="text-lg font-bold text-secondary group-hover:text-primary transition-colors line-clamp-2">
                 {article.title}
               </h3>
-              {article.url && (
-                <ExternalLink className="h-4 w-4 text-neutral-medium ml-2 flex-shrink-0" />
-              )}
+              <ChevronRight className="h-4 w-4 text-neutral-medium ml-2 flex-shrink-0 group-hover:text-primary transition-colors" />
             </div>
             
             <p className="text-neutral-medium text-base mb-3 line-clamp-3">
@@ -76,5 +70,6 @@ export default function NewsArticleCard({ article }: NewsArticleProps) {
         </div>
       </CardContent>
     </Card>
+    </Link>
   );
 }
