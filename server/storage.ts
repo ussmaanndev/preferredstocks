@@ -1,6 +1,7 @@
 import { preferredStocks, newsArticles, marketData, type PreferredStock, type InsertPreferredStock, type NewsArticle, type InsertNewsArticle, type MarketData, type InsertMarketData } from "@shared/schema";
 import { marketDataService } from "./services/market-data";
 import { stockDataService } from "./services/stock-data";
+import { newsService } from "./services/news-service";
 
 export interface IStorage {
   // Preferred Stocks
@@ -18,6 +19,7 @@ export interface IStorage {
   getLatestNewsArticles(limit?: number): Promise<NewsArticle[]>;
   getNewsArticlesByTicker(ticker: string): Promise<NewsArticle[]>;
   createNewsArticle(article: InsertNewsArticle): Promise<NewsArticle>;
+  refreshNewsFromAPI(): Promise<void>;
 
   // Market Data
   getLatestMarketData(): Promise<MarketData | undefined>;
@@ -138,6 +140,9 @@ export class MemStorage implements IStorage {
       preferredAvgYieldChange: 0.15,
       updatedAt: new Date(),
     };
+
+    // Fetch real-time news after initialization
+    this.refreshNewsFromAPI();
   }
 
   // Preferred Stocks methods
@@ -264,12 +269,54 @@ export class MemStorage implements IStorage {
       id,
       content: article.content || null,
       url: article.url || null,
+      imageUrl: article.imageUrl || null,
       relatedTickers: article.relatedTickers || null,
       category: article.category || null,
       isActive: article.isActive !== undefined ? article.isActive : true
     };
     this.newsArticles.set(id, newArticle);
     return newArticle;
+  }
+
+  async refreshNewsFromAPI(): Promise<void> {
+    try {
+      console.log('Refreshing news from Finnhub API...');
+      
+      // Fetch news for multiple companies related to preferred stocks
+      const companies = ['BAC', 'JPM', 'WFC', 'MS', 'C'];
+      const realTimeNews = await newsService.fetchMultipleCompanyNews(companies);
+      
+      if (realTimeNews.length > 0) {
+        console.log(`Fetched ${realTimeNews.length} real-time news articles`);
+        
+        // Clear existing news and add fresh news
+        this.newsArticles.clear();
+        this.newsIdCounter = 1;
+        
+        // Add real-time news articles
+        realTimeNews.forEach(newsItem => {
+          const id = this.newsIdCounter++;
+          const newsArticle: NewsArticle = {
+            id,
+            title: newsItem.title,
+            excerpt: newsItem.excerpt,
+            content: newsItem.content,
+            source: newsItem.source,
+            url: newsItem.url,
+            imageUrl: newsItem.imageUrl || null,
+            publishedAt: newsItem.publishedAt,
+            relatedTickers: newsItem.relatedTickers,
+            category: newsItem.category,
+            isActive: newsItem.isActive
+          };
+          this.newsArticles.set(id, newsArticle);
+        });
+      } else {
+        console.log('No real-time news fetched, keeping existing articles');
+      }
+    } catch (error) {
+      console.error('Error refreshing news from API:', error);
+    }
   }
 
   // Market Data methods

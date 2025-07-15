@@ -29,8 +29,19 @@ export default function NewsArticleCard({ article }: NewsArticleProps) {
       <Card className="bg-white shadow-md border hover:shadow-lg transition-shadow cursor-pointer group">
       <CardContent className="p-6">
         <div className="flex items-start space-x-4">
-          <div className="w-20 h-20 bg-neutral-light rounded-lg flex-shrink-0 flex items-center justify-center">
-            <Building2 className="h-8 w-8 text-neutral-medium" />
+          <div className="w-20 h-20 bg-neutral-light rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden">
+            {article.imageUrl ? (
+              <img 
+                src={article.imageUrl} 
+                alt={article.title} 
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                }}
+              />
+            ) : null}
+            <Building2 className={`h-8 w-8 text-neutral-medium ${article.imageUrl ? 'hidden' : ''}`} />
           </div>
           <div className="flex-1">
             <div className="flex items-start justify-between mb-2">
