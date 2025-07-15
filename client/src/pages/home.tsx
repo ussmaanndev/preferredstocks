@@ -270,25 +270,85 @@ export default function Home() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 gradient-blue text-white">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">Start Your Preferred Stock Journey Today</h2>
-          <p className="text-xl mb-8 opacity-90">
+      <section className="relative py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white via-transparent to-white"></div>
+        </div>
+        
+        {/* Floating Elements */}
+        <div className="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-5 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-10 right-10 w-16 h-16 bg-white bg-opacity-5 rounded-full animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-20 w-12 h-12 bg-white bg-opacity-5 rounded-full animate-pulse delay-500"></div>
+        
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+          {/* Icon */}
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-15 rounded-full mb-8 backdrop-blur-sm">
+            <TrendingUp className="w-10 h-10 text-white" />
+          </div>
+          
+          {/* Heading */}
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            Start Your Preferred Stock
+            <span className="block text-yellow-300">Journey Today</span>
+          </h2>
+          
+          {/* Subheading */}
+          <p className="text-xl md:text-2xl mb-4 opacity-95 max-w-3xl mx-auto leading-relaxed">
             Access professional-grade tools and insights to make informed investment decisions
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          
+          {/* Features List */}
+          <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm md:text-base">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-yellow-300 rounded-full"></div>
+              <span className="opacity-90">900+ Preferred Stocks</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-yellow-300 rounded-full"></div>
+              <span className="opacity-90">Real-time Data</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-yellow-300 rounded-full"></div>
+              <span className="opacity-90">Professional Analysis</span>
+            </div>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/stocks">
-              <Button className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 min-w-[200px] font-semibold">
-                <BarChart3 className="mr-2 h-5 w-5" />
+              <Button className="bg-white text-blue-600 hover:bg-gray-100 hover:scale-105 transition-all duration-300 text-lg px-10 py-4 min-w-[220px] font-semibold shadow-lg">
+                <BarChart3 className="mr-3 h-5 w-5" />
                 Explore Stocks
               </Button>
             </Link>
             <Link href="/analysis">
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 min-w-[200px] font-semibold">
-                <BookOpen className="mr-2 h-5 w-5" />
+              <Button variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 hover:scale-105 transition-all duration-300 text-lg px-10 py-4 min-w-[220px] font-semibold backdrop-blur-sm">
+                <BookOpen className="mr-3 h-5 w-5" />
                 Learn More
               </Button>
             </Link>
+          </div>
+          
+          {/* Trust Indicator */}
+          <div className="mt-12 pt-8 border-t border-white border-opacity-20">
+            <p className="text-sm opacity-75 mb-4">Trusted by thousands of investors worldwide</p>
+            <div className="flex justify-center items-center space-x-8 opacity-60">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-300">4.8★</div>
+                <div className="text-xs">User Rating</div>
+              </div>
+              <div className="h-8 w-px bg-white bg-opacity-30"></div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-300">50K+</div>
+                <div className="text-xs">Active Users</div>
+              </div>
+              <div className="h-8 w-px bg-white bg-opacity-30"></div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-300">99.9%</div>
+                <div className="text-xs">Uptime</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
