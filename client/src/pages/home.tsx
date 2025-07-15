@@ -323,7 +323,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/analysis">
-              <Button variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 hover:scale-105 transition-all duration-300 text-lg px-10 py-4 min-w-[220px] font-semibold backdrop-blur-sm">
+              <Button variant="outline" className="border-2 border-white text-white bg-white bg-opacity-10 hover:bg-white hover:text-blue-600 hover:scale-105 transition-all duration-300 text-lg px-10 py-4 min-w-[220px] font-semibold backdrop-blur-sm">
                 <BookOpen className="mr-3 h-5 w-5" />
                 Learn More
               </Button>
@@ -333,20 +333,20 @@ export default function Home() {
           {/* Trust Indicator */}
           <div className="mt-12 pt-8 border-t border-white border-opacity-20">
             <p className="text-sm opacity-75 mb-4">Trusted by thousands of investors worldwide</p>
-            <div className="flex justify-center items-center space-x-8 opacity-60">
+            <div className="flex justify-center items-center space-x-8">
               <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-300">4.8★</div>
-                <div className="text-xs">User Rating</div>
+                <div className="text-3xl font-extrabold text-yellow-300 opacity-95">4.8★</div>
+                <div className="text-xs opacity-70">User Rating</div>
               </div>
               <div className="h-8 w-px bg-white bg-opacity-30"></div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-300">50K+</div>
-                <div className="text-xs">Active Users</div>
+                <div className="text-3xl font-extrabold text-yellow-300 opacity-95">50K+</div>
+                <div className="text-xs opacity-70">Active Users</div>
               </div>
               <div className="h-8 w-px bg-white bg-opacity-30"></div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-300">99.9%</div>
-                <div className="text-xs">Uptime</div>
+                <div className="text-3xl font-extrabold text-yellow-300 opacity-95">99.9%</div>
+                <div className="text-xs opacity-70">Uptime</div>
               </div>
             </div>
           </div>
