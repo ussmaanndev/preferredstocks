@@ -29,6 +29,17 @@ export default function Stocks() {
 
   const { data: stocks, isLoading, error } = useQuery<PreferredStock[]>({
     queryKey: searchQuery ? ["/api/stocks", `search=${searchQuery}`] : ["/api/stocks"],
+    queryFn: async () => {
+      const url = searchQuery 
+        ? `/api/stocks?search=${encodeURIComponent(searchQuery)}`
+        : '/api/stocks';
+      
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch stocks');
+      }
+      return response.json();
+    },
     staleTime: 30000,
   });
 
@@ -245,10 +256,15 @@ export default function Stocks() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-medium" />
                   <Input
                     type="text"
-                    placeholder="Search by ticker or name..."
+                    placeholder="Search preferred stocks (e.g., BAC-PB, Goldman Sachs)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                 </div>
                 
