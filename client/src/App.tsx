@@ -9,6 +9,7 @@ import Stocks from "@/pages/stocks";
 import News from "@/pages/news";
 import NewsArticle from "@/pages/news-article";
 import Analysis from "@/pages/analysis";
+import Education from "@/pages/education";
 import NotFound from "@/pages/not-found";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
@@ -25,6 +26,7 @@ function Router() {
           <Route path="/news" component={News} />
           <Route path="/news/:id" component={NewsArticle} />
           <Route path="/analysis" component={Analysis} />
+          <Route path="/education" component={Education} />
           <Route component={NotFound} />
         </Switch>
       </main>
