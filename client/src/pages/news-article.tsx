@@ -107,19 +107,56 @@ export default function NewsArticlePage() {
             </p>
           </div>
 
-          {/* Full Content Placeholder */}
+          {/* Full Content */}
           <div className="prose prose-lg max-w-none">
-            <div className="bg-blue-50 p-8 rounded-lg text-center border-2 border-blue-200">
-              <h3 className="text-xl font-semibold text-blue-900 mb-4">
-                Full Article Content
-              </h3>
-              <p className="text-blue-700 mb-4">
-                Full article will appear here for: <strong>{article.title}</strong>
-              </p>
-              <p className="text-sm text-blue-600">
-                Article ID: {id}
-              </p>
-            </div>
+            {article.content ? (
+              <div className="text-gray-800 leading-relaxed">
+                <div className="whitespace-pre-wrap text-base leading-7">
+                  {article.content}
+                </div>
+                
+                {/* Additional content sections for better presentation */}
+                <div className="mt-8 space-y-6">
+                  <div className="bg-gray-50 p-6 rounded-lg border-l-4 border-blue-500">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Highlights</h3>
+                    <ul className="space-y-2 text-gray-700">
+                      <li>• This article provides important insights into preferred stock markets</li>
+                      <li>• Investors should consider the impact on dividend yields and stock valuations</li>
+                      <li>• Market conditions continue to evolve, affecting preferred stock performance</li>
+                    </ul>
+                  </div>
+                  
+                  {article.relatedTickers && article.relatedTickers.length > 0 && (
+                    <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Related Stocks Mentioned</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {article.relatedTickers.map((ticker) => (
+                          <Link key={ticker} href={`/stocks/${ticker}`}>
+                            <Badge variant="outline" className="hover:bg-blue-100 cursor-pointer">
+                              {ticker}
+                            </Badge>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="bg-green-50 p-6 rounded-lg border-l-4 border-green-500">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Investment Implications</h3>
+                    <p className="text-gray-700">
+                      This development may affect preferred stock investors who focus on dividend income and capital preservation. 
+                      Consider reviewing your portfolio allocation and consulting with a financial advisor to understand the potential impacts.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500 text-center">
+                <p className="text-yellow-800">
+                  Article content is currently unavailable. Please check back later or contact support.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Related Information */}
