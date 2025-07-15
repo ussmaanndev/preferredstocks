@@ -55,6 +55,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Real-time stock search for any ticker
+  app.get("/api/stocks/search/:ticker", async (req, res) => {
+    try {
+      const { ticker } = req.params;
+      const upperTicker = ticker.toUpperCase();
+      
+      // First check if it's a preferred stock in our database
+      const preferredStock = await storage.getPreferredStock(upperTicker);
+      if (preferredStock) {
+        return res.json({
+          type: 'preferred',
+          data: preferredStock
+        });
+      }
+      
+      // If not found in preferred stocks, fetch real-time data from external APIs
+      const { marketDataService } = await import('./services/market-data');
+      const stockData = await marketDataService.fetchPreferredStockData(upperTicker);
+      
+      if (stockData) {
+        // Create a stock-like object with the fetched data
+        const realTimeStock = {
+          ticker: upperTicker,
+          name: `${upperTicker} Stock`,
+          price: stockData.price,
+          change: stockData.change,
+          changePercent: stockData.changePercent,
+          lastTrade: stockData.lastTrade,
+          volume: 0, // Not available from API
+          dividendYield: 0, // Not available from API
+          marketCap: 'N/A',
+          sector: 'Unknown',
+          description: `Real-time data for ${upperTicker}`,
+          isActive: true,
+          type: 'regular'
+        };
+        
+        return res.json({
+          type: 'regular',
+          data: realTimeStock
+        });
+      }
+      
+      return res.status(404).json({ message: "Stock not found" });
+    } catch (error) {
+      console.error(`Error searching for stock ${req.params.ticker}:`, error);
+      res.status(500).json({ message: "Failed to search for stock" });
+    }
+  });
+
   app.post("/api/stocks", async (req, res) => {
     try {
       const stockData = insertPreferredStockSchema.parse(req.body);

@@ -1,13 +1,14 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { Search, Filter, TrendingUp, TrendingDown } from "lucide-react";
+import { Search, Filter, TrendingUp, TrendingDown, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from "wouter";
 import SEOHead from "@/components/seo-head";
 import type { PreferredStock } from "@shared/schema";
@@ -20,10 +21,23 @@ export default function Stocks() {
   const [sortBy, setSortBy] = useState<'ticker' | 'price' | 'change' | 'yield' | 'volume'>('ticker');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [filterBySector, setFilterBySector] = useState<string>('all');
+  
+  // Real-time stock search states
+  const [tickerQuery, setTickerQuery] = useState('');
+  const [searchTicker, setSearchTicker] = useState('');
+  const [searchError, setSearchError] = useState('');
 
   const { data: stocks, isLoading, error } = useQuery<PreferredStock[]>({
     queryKey: searchQuery ? ["/api/stocks", `search=${searchQuery}`] : ["/api/stocks"],
     staleTime: 30000,
+  });
+
+  // Real-time stock search query
+  const { data: stockSearchResult, isLoading: isSearching, error: searchResultError } = useQuery({
+    queryKey: ["/api/stocks/search", searchTicker],
+    enabled: !!searchTicker,
+    staleTime: 10000,
+    retry: false
   });
 
   const filteredAndSortedStocks = useMemo(() => {
@@ -97,6 +111,20 @@ export default function Stocks() {
     return sortOrder === 'asc' ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />;
   };
 
+  const handleTickerSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (tickerQuery.trim()) {
+      setSearchError('');
+      setSearchTicker(tickerQuery.trim().toUpperCase());
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchTicker('');
+    setTickerQuery('');
+    setSearchError('');
+  };
+
   return (
     <>
       <SEOHead
@@ -118,12 +146,97 @@ export default function Stocks() {
             </p>
           </div>
 
+          {/* Real-time Stock Search */}
+          <Card className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-secondary flex items-center">
+                <Search className="h-5 w-5 mr-2" />
+                Real-time Stock Search
+              </CardTitle>
+              <p className="text-sm text-neutral-medium">
+                Search for any stock ticker (e.g., AAPL, MSFT, GOOGL) to get real-time data
+              </p>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleTickerSearch} className="flex gap-3">
+                <div className="flex-1">
+                  <Input
+                    type="text"
+                    placeholder="Enter ticker symbol (e.g., AAPL, BAC, MSFT)"
+                    value={tickerQuery}
+                    onChange={(e) => setTickerQuery(e.target.value)}
+                    className="text-lg"
+                  />
+                </div>
+                <Button type="submit" disabled={isSearching || !tickerQuery.trim()}>
+                  {isSearching ? 'Searching...' : 'Search'}
+                </Button>
+                {searchTicker && (
+                  <Button type="button" variant="outline" onClick={clearSearch}>
+                    Clear
+                  </Button>
+                )}
+              </form>
+
+              {/* Search Results */}
+              {searchTicker && (
+                <div className="mt-4">
+                  {isSearching ? (
+                    <div className="flex items-center justify-center p-4">
+                      <div className="text-neutral-medium">Searching for {searchTicker}...</div>
+                    </div>
+                  ) : searchResultError ? (
+                    <Alert className="border-red-200 bg-red-50">
+                      <AlertTriangle className="h-4 w-4 text-red-600" />
+                      <AlertDescription className="text-red-700">
+                        Stock "{searchTicker}" not found. Please check the ticker symbol and try again.
+                      </AlertDescription>
+                    </Alert>
+                  ) : stockSearchResult ? (
+                    <Card className="bg-white border-green-200">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="text-xl font-bold text-primary">
+                              {stockSearchResult.data.ticker}
+                            </h3>
+                            <p className="text-neutral-medium">{stockSearchResult.data.name}</p>
+                            <Badge variant="secondary" className="mt-1">
+                              {stockSearchResult.type === 'preferred' ? 'Preferred Stock' : 'Regular Stock'}
+                            </Badge>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-secondary">
+                              ${stockSearchResult.data.price?.toFixed(2)}
+                            </div>
+                            <div className={`text-lg font-semibold ${
+                              stockSearchResult.data.changePercent >= 0 ? 'text-success' : 'text-destructive'
+                            }`}>
+                              {stockSearchResult.data.change >= 0 ? '+' : ''}
+                              {stockSearchResult.data.change?.toFixed(2)} ({stockSearchResult.data.changePercent >= 0 ? '+' : ''}
+                              {stockSearchResult.data.changePercent?.toFixed(2)}%)
+                            </div>
+                            {stockSearchResult.data.dividendYield > 0 && (
+                              <div className="text-sm text-neutral-medium mt-1">
+                                Yield: {stockSearchResult.data.dividendYield.toFixed(2)}%
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ) : null}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Search and Filter Controls */}
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="text-lg font-semibold text-secondary flex items-center">
                 <Filter className="h-5 w-5 mr-2" />
-                Search & Filter
+                Browse Preferred Stocks
               </CardTitle>
             </CardHeader>
             <CardContent>
