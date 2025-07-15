@@ -348,7 +348,7 @@ export default function Education() {
                     </Button>
                   </Link>
                   <Link href="/analysis">
-                    <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-3">
+                    <Button variant="outline" className="border-white text-white bg-white bg-opacity-10 hover:bg-white hover:text-blue-600 text-lg px-8 py-3">
                       View Analysis
                     </Button>
                   </Link>
